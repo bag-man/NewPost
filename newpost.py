@@ -24,7 +24,7 @@ while True:
                     seen.append(post.id)
                 if post.id not in seen:
                     subject = 'New post in ' + str(post.subreddit)
-                    content = '[' + post.title + '](' + post.url + ')'
+                    content = '[' + post.title + '](' + post.shortlink + ')'
                     r.redditor(user).message(subject, content)
                     print('New post! Sending PM.')
                     seen.append(post.id)
