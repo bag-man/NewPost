@@ -1,6 +1,8 @@
 import sys
 import praw
 import time
+import requests
+import json
 
 from slackclient import SlackClient
 sc = SlackClient('WEB_API_KEY')
@@ -34,14 +36,19 @@ while True:
                     #     r.redditor(user).message(subject, content)
 
                     if post.author != 'OctoMod':
-                        content = post.title + " | " + post.shortlink
+                        message = post.title + " | " + post.shortlink
 
                         sc.api_call(
                             'chat.postMessage',
                             channel='#alerts',
                             username='New Post Alert',
-                            text=content
+                            text=message
                         )
+
+                        url = 'https://discordapp.com/api/webhooks/<your web hook token here>'
+                        payload = { "content": message }
+                        headers = { 'Content-Type': 'application/json', }
+                        requests.post(url, data=json.dumps(payload), headers=headers)
 
                     seen.append(post.id)
 
@@ -52,3 +59,4 @@ while True:
         sys.exit(0)
     except Exception as e:
         print(e)
+        time.sleep(5)
