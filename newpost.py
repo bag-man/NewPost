@@ -4,59 +4,85 @@ import time
 import requests
 import json
 
-from slackclient import SlackClient
-sc = SlackClient('WEB_API_KEY')
+def check_new_posts(sub):
+    for post in r.subreddit(sub).new(limit=10):
+        if first is True:
+            seen_posts.append(post.id)
+        if post.id not in seen_posts:
+            notify(sub, post.title, post.shortlink)
+        seen_posts.append(post.id)
 
-users = ['Midasx']
-reddits = ['detroitredwings']
-seen = []
+def check_modqueue(sub):
+    for item in r.subreddit(sub).mod.modqueue(limit=None):
+        if first is True:
+            seen_modqueue.append(item.id)
+        if item.id not in seen_modqueue:
+            url = 'https://reddit.com' + item.permalink
+            notify(sub, 'Modqueue', url)
+            seen_modqueue.append(item.id)
+
+def notify(subreddit, title, url):
+    if config['discord']['enabled']:
+        notify_discord(subreddit, title, url)
+    if config['slack']['enabled']:
+        notify_slack(subreddit, title, url)
+    if config['reddit_pm']['enabled']:
+        notify_reddit(subreddit, title, url)
+
+def notify_discord(subreddit, title, url):
+    message = title + " | <" + url + ">"
+    payload = { 'content': message }
+    headers = { 'Content-Type': 'application/json', }
+    requests.post(config['discord']['webhook'], data=json.dumps(payload), headers=headers)
+
+def notify_slack(subreddit, title, url):
+    message = title + " | " + url
+    payload = { 'text': message }
+    headers = { 'Content-Type': 'application/json', }
+    requests.post(config['slack']['webhook'], data=json.dumps(payload), headers=headers)
+
+def notify_reddit(subreddit, title, url):
+    if title is 'Modqueue':
+        subject = 'New item in modqueue on /r/' + subreddit + '!'
+    else:
+        subject = 'New post on /r/' + subreddit + '!'
+
+    message = '[' + title + '](' + url + ')'
+
+    for user in config['reddit_pm']['users']:
+        r.redditor(user).message(subject, message)
+
+
+with open('config.json') as config_file:
+    config = json.load(config_file)
 
 r = praw.Reddit(
-    user_agent='NewPost',
-    client_id='RGtz43e2ZuuuoA',
-    client_secret='clientsecret',
-    username='NewPostAlert',
-    password='password'
+    user_agent = config['reddit']['user_agent'],
+    client_id = config['reddit']['client_id'],
+    client_secret = config['reddit']['client_secret'],
+    username = config['reddit']['username'],
+    password = config['reddit']['password']
 )
 
-print("Logged in")
-
+seen_posts = []
+seen_modqueue = []
 first = True
 
 while True:
     try:
-        for sub in reddits:
-            for post in r.subreddit(sub).new(limit=10):
-                if first is True:
-                    seen.append(post.id)
-                if post.id not in seen:
-                    # subject = 'New post in ' + str(post.subreddit)
-                    # content = '[' + post.title + '](' + post.shortlink + ')'
-                    # for user in users:
-                    #     r.redditor(user).message(subject, content)
+        for sub in config['subreddits']:
+            if config['modqueue']:
+                check_modqueue(sub)
+            if config['new_posts']:
+                check_new_posts(sub)
 
-                    if post.author != 'OctoMod':
-                        message = post.title + " | " + post.shortlink
-
-                        sc.api_call(
-                            'chat.postMessage',
-                            channel='#alerts',
-                            username='New Post Alert',
-                            text=message
-                        )
-
-                        url = 'https://discordapp.com/api/webhooks/<your web hook token here>'
-                        payload = { "content": message }
-                        headers = { 'Content-Type': 'application/json', }
-                        requests.post(url, data=json.dumps(payload), headers=headers)
-
-                    seen.append(post.id)
-
-        time.sleep(5)
-        first = False
+            time.sleep(5)
+            first = False
     except KeyboardInterrupt:
         print('\n')
         sys.exit(0)
     except Exception as e:
-        print(e)
+        print('Error:', e)
         time.sleep(5)
+
+

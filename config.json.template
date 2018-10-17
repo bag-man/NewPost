@@ -1,0 +1,24 @@
+{ 
+  "reddit": {
+    "user_agent":"",
+    "client_id":"",
+    "client_secret":"",
+    "username":"",
+    "password":""
+  },
+  "slack": {
+    "webhook": "",
+    "enabled": false
+  },
+  "reddit_pm": {
+    "users": [ "" ],
+    "enabled": false
+  },
+  "discord": {
+    "webhook": "",
+    "enabled": true
+  },
+  "modqueue": true,
+  "new_posts": true,
+  "subreddits": [ "" ]
+}
