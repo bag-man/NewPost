@@ -4,6 +4,8 @@ import time
 import requests
 import json
 
+CONFIG_FILE='config.json'
+
 def check_new_posts(sub):
     for post in r.subreddit(sub).new(limit=10):
         if first is True:
@@ -53,7 +55,7 @@ def notify_reddit(subreddit, title, url):
         r.redditor(user).message(subject, message)
 
 
-with open('config.json') as config_file:
+with open(CONFIG_FILE) as config_file:
     config = json.load(config_file)
 
 r = praw.Reddit(

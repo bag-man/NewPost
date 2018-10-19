@@ -5,7 +5,7 @@ You just need praw, so run:
 
     pip install -r requirements.txt
 
-To install the dependencies. You then need to configure the `config.json` file with the keys and settings you want. 
+To install the dependencies. You then need to configure copy the `config.json.template` file to `config.json` and update it with the api keys and settings you want. 
 
 ### Reddit 
 Create your bot / mod account and go to: https://www.reddit.com/prefs/apps/. Create an app and it will give you the credentials you need. 
@@ -22,6 +22,9 @@ Just fill in the usernames you want to be notified in the array. i.e `"users": [
 ### Features
 Then just set enabled to true on the notifications you want. You can also disable modqueue or post checking by setting mosqueue or new_posts to false. 
 
-## Still a WIP
-This is still a work in progress and may not be super stable, but it is also super simple so I'm sure you can figure it out!
+## ToDo
+This is still a WIP and an ever evolving project:
 
+* Write some tests for it
+* Try and cover more error cases
+* Modmail notifications
