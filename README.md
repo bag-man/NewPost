@@ -28,3 +28,4 @@ This is still a WIP and an ever evolving project:
 * Write some tests for it
 * Try and cover more error cases
 * Modmail notifications
+* Make into a PyPI module and or systemd service
