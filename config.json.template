@@ -16,8 +16,17 @@
   },
   "discord": {
     "webhook": "",
-    "enabled": true
+    "enabled": false
   },
+  "keywords": {
+    "list": [
+      "foo",
+      "bar",
+      "cat"
+    ],
+    "enabled": false
+  },
+  "debug": true,
   "modqueue": true,
   "new_posts": true,
   "subreddits": [ "" ]

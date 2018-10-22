@@ -10,6 +10,8 @@ def check_new_posts(sub):
     for post in r.subreddit(sub).new(limit=10):
         if first is True:
             seen_posts.append(post.id)
+        if config['keywords']['enabled'] and not any(x.lower() in post.title.lower() for x in config['keywords']['list']):
+            seen_posts.append(post.id)
         if post.id not in seen_posts:
             notify(sub, post.title, post.shortlink)
         seen_posts.append(post.id)
@@ -30,6 +32,8 @@ def notify(subreddit, title, url):
         notify_slack(subreddit, title, url)
     if config['reddit_pm']['enabled']:
         notify_reddit(subreddit, title, url)
+    if config['debug']:
+        print(subreddit + ' | ' + title + ' | ' +  url)
 
 def notify_discord(subreddit, title, url):
     message = title + " | <" + url + ">"
