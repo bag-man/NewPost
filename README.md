@@ -20,7 +20,7 @@ In your server settings create a webhook: https://support.discordapp.com/hc/en-u
 Just fill in the usernames you want to be notified in the array. i.e `"users": [ "Isa", "Owen" ],`
 
 ### Features
-Then just set enabled to true on the notifications you want. You can also disable modqueue or post checking by setting mosqueue or new_posts to false. 
+Then just set enabled to true on the notifications you want. You can also disable modqueue or post checking by setting mosqueue or new_posts to false. If you want to listen for only certain keywords you can add a list and enable that too. 
 
 ## ToDo
 This is still a WIP and an ever evolving project:
