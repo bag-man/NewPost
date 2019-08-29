@@ -26,7 +26,7 @@ def check_modqueue(sub):
         if item.id not in seen_modqueue:
             url = 'https://reddit.com' + item.permalink
             notify(sub, 'Modqueue', url)
-            seen_modqueue.insert(0, item.id)
+            seen_modqueue.insert(0, post.id)
             seen_modqueue.pop()
 
 def notify(subreddit, title, url):
