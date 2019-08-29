@@ -11,23 +11,19 @@ def check_new_posts(sub):
         if first is True:
             seen_posts.append(post.id)
         if config['keywords']['enabled'] and not any(x.lower() in post.title.lower() for x in config['keywords']['list']):
-            seen_posts.insert(0, post.id)
-            seen_posts.pop(0)
+            seen_posts.append(post.id)
         if post.id not in seen_posts:
             notify(sub, post.title, post.shortlink)
-            seen_posts.insert(0, post.id)
-            seen_posts.pop()
-
+        seen_posts.append(post.id)
 
 def check_modqueue(sub):
-    for item in r.subreddit(sub).mod.modqueue(limit=10):
+    for item in r.subreddit(sub).mod.modqueue(limit=None):
         if first is True:
             seen_modqueue.append(item.id)
         if item.id not in seen_modqueue:
             url = 'https://reddit.com' + item.permalink
             notify(sub, 'Modqueue', url)
-            seen_modqueue.insert(0, post.id)
-            seen_modqueue.pop()
+            seen_modqueue.append(item.id)
 
 def notify(subreddit, title, url):
     if config['discord']['enabled']:
