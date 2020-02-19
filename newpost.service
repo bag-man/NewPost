@@ -1,0 +1,16 @@
+[Unit]
+Description=NewPost
+
+[Service]
+ExecStart=/usr/bin/python newpost.py 
+WorkingDirectory=/home/owg1/Projects/NewPost/
+Restart=always
+RuntimeMaxSec=604800
+RestartSec=10 
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=newpost
+User=owg1
+
+[Install]
+WantedBy=multi-user.target
