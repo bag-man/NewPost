@@ -32,6 +32,8 @@ def notify(subreddit, title, url):
         notify_slack(subreddit, title, url)
     if config['reddit_pm']['enabled']:
         notify_reddit(subreddit, title, url)
+    if config['telegram']['enabled']:
+        notify_telegram(subreddit, title, url)
     if config['debug']:
         print(subreddit + ' | ' + title + ' | ' +  url)
 
@@ -58,6 +60,15 @@ def notify_reddit(subreddit, title, url):
     for user in config['reddit_pm']['users']:
         r.redditor(user).message(subject, message)
 
+def notify_telegram(subreddit, title, url):
+    message = '<b>[/r/{}]</b> {} - {}'.format(subreddit, title, url)
+    payload = { 
+        'chat_id': config['telegram']['chat_id'],
+        'text': message,
+        'parse_mode': 'HTML'
+    }
+    requests.post("https://api.telegram.org/bot{}/sendMessage".format(config['telegram']['token']),
+                  data=payload)
 
 with open(CONFIG_FILE) as config_file:
     config = json.load(config_file)
