@@ -1,5 +1,5 @@
 # New Post & ModQueue alert
-This script will monitor a list of subreddits for new posts and items in the modqueue. It can then send a message to a slack or discord channel and a private message to a list of users on reddit. 
+This script will monitor a list of subreddits for new posts and items in the modqueue. It can then send a message to a slack or discord channel or a telegram user and a private message to a list of users on reddit. 
 
 You just need praw, so run:
 
@@ -18,6 +18,11 @@ In your server settings create a webhook: https://support.discordapp.com/hc/en-u
 
 ### Reddit PM's
 Just fill in the usernames you want to be notified in the array. i.e `"users": [ "Isa", "Owen" ],`
+
+### Telegram
+In Telegram, message `/newbot` to @BotFather. Follow the steps and you will receive a token at the end, copy this token to your `config.json`.
+
+To get the chat ID, send your bot a message and open https://api.telegram.org/bot[TOKEN]/getUpdates in your browser, you will find an ID there.
 
 ### Features
 Then just set enabled to true on the notifications you want. You can also disable modqueue or post checking by setting mosqueue or new_posts to false. If you want to listen for only certain keywords you can add a list and enable that too. 
