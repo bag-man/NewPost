@@ -18,6 +18,11 @@
     "webhook": "",
     "enabled": false
   },
+  "telegram": {
+    "token": "",
+    "chat_id": "",
+    "enabled": false
+  },
   "keywords": {
     "list": [
       "foo",
