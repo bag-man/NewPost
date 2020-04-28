@@ -16,12 +16,13 @@ def check_new_posts(sub):
             notify(sub, post.title, post.shortlink)
             seen_posts.append(post.id)
 
-def check_modqueue(sub):
-    for item in r.subreddit(sub).mod.modqueue(limit=None):
+def check_modqueue():
+    for item in r.subreddit('mod').mod.modqueue(limit=None):
         if first is True:
             seen_modqueue.append(item.id)
         if item.id not in seen_modqueue:
             url = 'https://reddit.com' + item.permalink
+            sub = item.subreddit.display_name
             notify(sub, 'Modqueue', url)
             seen_modqueue.append(item.id)
 
@@ -87,14 +88,13 @@ first = True
 
 while True:
     try:
-        for sub in config['subreddits']:
-            if config['modqueue']:
-                check_modqueue(sub)
-            if config['new_posts']:
+        if config['modqueue']:
+            check_modqueue()
+        if config['new_posts']:
+            for sub in config['subreddits']:
                 check_new_posts(sub)
-
-            time.sleep(5)
-            first = False
+                time.sleep(5)
+        first = False
     except KeyboardInterrupt:
         print('\n')
         sys.exit(0)
