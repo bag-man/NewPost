@@ -14,7 +14,7 @@ def check_new_posts(sub):
             seen_posts.append(post.id)
         if post.id not in seen_posts:
             notify(sub, post.title, post.shortlink)
-        seen_posts.append(post.id)
+            seen_posts.append(post.id)
 
 def check_modqueue(sub):
     for item in r.subreddit(sub).mod.modqueue(limit=None):
