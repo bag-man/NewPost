@@ -6,27 +6,24 @@ import json
 
 CONFIG_FILE='config.json'
 
-def check_new_posts(sub):
-    for post in r.subreddit(sub).new(limit=10):
-        if first is True:
-            seen_posts.append(post.id)
-        if config['keywords']['enabled'] and not any(x.lower() in post.title.lower() for x in config['keywords']['list']):
-            seen_posts.append(post.id)
-        if post.id not in seen_posts:
-            notify(sub, post.title, post.shortlink)
-            seen_posts.append(post.id)
+def handle_post(submission):
+    url = submission.shortlink
+    title = submission.title
+    sub = submission.subreddit.display_name
 
-def check_modqueue():
-    for item in r.subreddit('mod').mod.modqueue(limit=None):
-        if first is True:
-            seen_modqueue.append(item.id)
-        if item.id not in seen_modqueue:
-            url = 'https://reddit.com' + item.permalink
-            sub = item.subreddit.display_name
-            notify(sub, 'Modqueue', url)
-            seen_modqueue.append(item.id)
+    if config['keywords']['enabled']:
+        if any(x.lower() in post.title.lower() for x in config['keywords']['list']):
+            notify(sub, title, url)
+    else:
+        notify(sub, title, url)
+
+def handle_modqueue(item):
+    url = 'https://reddit.com' + item.permalink
+    sub = item.subreddit.display_name
+    notify(sub, 'Modqueue', url)
 
 def notify(subreddit, title, url):
+    if first: return
     if config['discord']['enabled']:
         notify_discord(subreddit, title, url)
     if config['slack']['enabled']:
@@ -82,19 +79,27 @@ r = praw.Reddit(
     password = config['reddit']['password']
 )
 
-seen_posts = []
-seen_modqueue = []
 first = True
+subreddits = '+'.join(config['subreddits'])
+modqueue_stream = (r.subreddit('mod').mod.stream.modqueue(pause_after=-1)
+                   if config['modqueue'] else [])
+submission_stream = (r.subreddit(subreddits).stream.submissions(pause_after=-1)
+                     if config['new_posts'] else [])
 
 while True:
     try:
-        if config['modqueue']:
-            check_modqueue()
-        if config['new_posts']:
-            for sub in config['subreddits']:
-                check_new_posts(sub)
-                time.sleep(5)
+        for item in modqueue_stream:
+            if item is None:
+                break
+            handle_modqueue(item)
+
+        for submission in submission_stream:
+            if submission is None:
+                break
+            handle_post(submission)
+
         first = False
+        time.sleep(1)
     except KeyboardInterrupt:
         print('\n')
         sys.exit(0)
