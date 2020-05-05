@@ -105,6 +105,6 @@ while True:
         sys.exit(0)
     except Exception as e:
         print('Error:', e)
-        time.sleep(5)
+        time.sleep(30)
 
 
