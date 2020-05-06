@@ -68,6 +68,13 @@ def notify_telegram(subreddit, title, url):
     requests.post("https://api.telegram.org/bot{}/sendMessage".format(config['telegram']['token']),
                   data=payload)
 
+def start_streams():
+    modqueue_stream = (r.subreddit('mod').mod.stream.modqueue(pause_after=-1)
+                       if config['modqueue'] else [])
+    submission_stream = (r.subreddit(subreddits).stream.submissions(pause_after=-1)
+                         if config['new_posts'] else [])
+    return modqueue_stream, submission_stream
+
 with open(CONFIG_FILE) as config_file:
     config = json.load(config_file)
 
@@ -81,10 +88,7 @@ r = praw.Reddit(
 
 first = True
 subreddits = '+'.join(config['subreddits'])
-modqueue_stream = (r.subreddit('mod').mod.stream.modqueue(pause_after=-1)
-                   if config['modqueue'] else [])
-submission_stream = (r.subreddit(subreddits).stream.submissions(pause_after=-1)
-                     if config['new_posts'] else [])
+(modqueue_stream, submission_stream) = start_streams()
 
 while True:
     try:
@@ -105,6 +109,6 @@ while True:
         sys.exit(0)
     except Exception as e:
         print('Error:', e)
-        time.sleep(5)
-
+        time.sleep(30)
+        (modqueue_stream, submission_stream) = start_streams()
 
