@@ -48,7 +48,7 @@ def notify_slack(subreddit, title, url):
     requests.post(config['slack']['webhook'], data=json.dumps(payload), headers=headers)
 
 def notify_reddit(subreddit, title, url):
-    if title is 'Modqueue':
+    if title == 'Modqueue':
         subject = 'New item in modqueue on /r/' + subreddit + '!'
     else:
         subject = 'New post on /r/' + subreddit + '!'
@@ -60,7 +60,7 @@ def notify_reddit(subreddit, title, url):
 
 def notify_telegram(subreddit, title, url):
     message = '<b>[/r/{}]</b> {} - {}'.format(subreddit, title, url)
-    payload = { 
+    payload = {
         'chat_id': config['telegram']['chat_id'],
         'text': message,
         'parse_mode': 'HTML'
