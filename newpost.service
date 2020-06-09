@@ -5,7 +5,6 @@ Description=NewPost
 ExecStart=/usr/bin/python newpost.py 
 WorkingDirectory=/home/owg1/Projects/NewPost/
 Restart=always
-RuntimeMaxSec=604800
 RestartSec=10 
 StandardOutput=syslog
 StandardError=syslog
