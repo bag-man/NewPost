@@ -12,7 +12,7 @@ def handle_post(submission):
     sub = submission.subreddit.display_name
 
     if config['keywords']['enabled']:
-        if any(x.lower() in post.title.lower() for x in config['keywords']['list']):
+        if any(x.lower() in title.lower() for x in config['keywords']['list']):
             notify(sub, title, url)
     else:
         notify(sub, title, url)
